@@ -23,9 +23,8 @@ See the AUTHORS file for names of contributors.
 
 #include "phxrpc/msg/base_protocol.h"
 
-
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 enum class ReturnCode;
 
@@ -33,20 +32,20 @@ class BaseTcpStream;
 
 class MqttMessage;
 
-class MqttProtocol : public BaseProtocol {
-  public:
-    MqttProtocol() = default;
-    virtual ~MqttProtocol() override = default;
+class MqttProtocol : public BaseProtocol
+{
+ public:
+  MqttProtocol() = default;
+  virtual ~MqttProtocol() override = default;
 
-    static ReturnCode SendMessage(BaseTcpStream &socket,
-                                  const MqttMessage *const msg);
-    static ReturnCode RecvMessage(BaseTcpStream &socket,
-                                  MqttMessage *const msg);
+  static ReturnCode SendMessage(BaseTcpStream &socket,
+                                const MqttMessage *const msg);
+  static ReturnCode RecvMessage(BaseTcpStream &socket,
+                                MqttMessage *const msg);
 
-    virtual ReturnCode ServerRecv(BaseTcpStream &socket,
-                                  BaseRequest *&req) override;
+  virtual ReturnCode ServerRecv(BaseTcpStream &socket,
+                                BaseRequest *&req) override;
 };
-
 
 }
 

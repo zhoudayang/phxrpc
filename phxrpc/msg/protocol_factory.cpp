@@ -22,27 +22,29 @@ See the AUTHORS file for names of contributors.
 #include "phxrpc/http.h"
 #include "phxrpc/mqtt.h"
 
+namespace phxrpc
+{
 
-namespace phxrpc {
+BaseProtocolFactory *BaseProtocolFactory::CreateFactory(UThreadTcpStream &in_stream)
+{
+  char c{static_cast<char>(in_stream.peek())};
+  if ('P' == c || 'G' == c || 'H' == c)
+  {  // look for POST GET HEAD
+    return new HttpProtocolFactory;
+  }
 
-
-BaseProtocolFactory *BaseProtocolFactory::CreateFactory(UThreadTcpStream &in_stream) {
-    char c{static_cast<char>(in_stream.peek())};
-    if ('P' == c || 'G' == c || 'H' == c) {  // look for POST GET HEAD
-        return new HttpProtocolFactory;
-    }
-
-    return new MqttProtocolFactory;
+  return new MqttProtocolFactory;
 }
 
-BaseProtocol *HttpProtocolFactory::GenProtocol() {
-    return new HttpProtocol;
+BaseProtocol *HttpProtocolFactory::GenProtocol()
+{
+  return new HttpProtocol;
 }
 
-BaseProtocol *MqttProtocolFactory::GenProtocol() {
-    return new MqttProtocol;
+BaseProtocol *MqttProtocolFactory::GenProtocol()
+{
+  return new MqttProtocol;
 }
-
 
 }
 

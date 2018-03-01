@@ -21,9 +21,8 @@ See the AUTHORS file for names of contributors.
 
 #pragma once
 
-
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 class BaseTcpStream;
 class ClientMonitor;
@@ -40,52 +39,54 @@ class MqttPingreq;
 class MqttPingresp;
 class MqttDisconnect;
 
-class MqttClient {
-  public:
-    struct MqttStat {
-        bool send_error_{false};
-        bool recv_error_{false};
+class MqttClient
+{
+ public:
+  struct MqttStat
+  {
+    bool send_error_{false};
+    bool recv_error_{false};
 
-        MqttStat() = default;
+    MqttStat() = default;
 
-        MqttStat(bool send_error, bool recv_error)
-                : send_error_(send_error), recv_error_(recv_error) {
-        }
-    };
+    MqttStat(bool send_error, bool recv_error)
+        : send_error_(send_error), recv_error_(recv_error)
+    {
+    }
+  };
 
-    // @return true: socket ok; false: socket error
-    static int Connect(BaseTcpStream &socket, const MqttConnect &req,
-                       MqttConnack &resp, MqttStat &mqtt_stat);
-    static int Connect(BaseTcpStream &socket, const MqttConnect &req,
-                       MqttConnack &resp);
+  // @return true: socket ok; false: socket error
+  static int Connect(BaseTcpStream &socket, const MqttConnect &req,
+                     MqttConnack &resp, MqttStat &mqtt_stat);
+  static int Connect(BaseTcpStream &socket, const MqttConnect &req,
+                     MqttConnack &resp);
 
-    // @return true: socket ok; false: socket error
-    static int Publish(BaseTcpStream &socket, const MqttPublish &req,
-                       MqttPuback &resp, MqttStat &mqtt_stat);
-    static int Publish(BaseTcpStream &socket, const MqttPublish &req,
-                       MqttPuback &resp);
+  // @return true: socket ok; false: socket error
+  static int Publish(BaseTcpStream &socket, const MqttPublish &req,
+                     MqttPuback &resp, MqttStat &mqtt_stat);
+  static int Publish(BaseTcpStream &socket, const MqttPublish &req,
+                     MqttPuback &resp);
 
-    // @return true: socket ok; false: socket error
-    static int Subscribe(BaseTcpStream &socket, const MqttSubscribe &req,
-                         MqttSuback &resp);
+  // @return true: socket ok; false: socket error
+  static int Subscribe(BaseTcpStream &socket, const MqttSubscribe &req,
+                       MqttSuback &resp);
 
-    // @return true: socket ok; false: socket error
-    static int Unsubscribe(BaseTcpStream &socket, const MqttUnsubscribe &req,
-                           MqttUnsuback &resp);
+  // @return true: socket ok; false: socket error
+  static int Unsubscribe(BaseTcpStream &socket, const MqttUnsubscribe &req,
+                         MqttUnsuback &resp);
 
-    // @return true: socket ok; false: socket error
-    static int Ping(BaseTcpStream &socket, const MqttPingreq &req,
-                    MqttPingresp &resp);
+  // @return true: socket ok; false: socket error
+  static int Ping(BaseTcpStream &socket, const MqttPingreq &req,
+                  MqttPingresp &resp);
 
-    // @return true: socket ok; false: socket error
-    static int Disconnect(BaseTcpStream &socket, const MqttDisconnect &req,
-                          MqttStat &mqtt_stat);
-    static int Disconnect(BaseTcpStream &socket, const MqttDisconnect &req);
+  // @return true: socket ok; false: socket error
+  static int Disconnect(BaseTcpStream &socket, const MqttDisconnect &req,
+                        MqttStat &mqtt_stat);
+  static int Disconnect(BaseTcpStream &socket, const MqttDisconnect &req);
 
-  private:
-    MqttClient();
+ private:
+  MqttClient();
 };
-
 
 }  // namespace phxrpc
 

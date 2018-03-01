@@ -25,9 +25,8 @@ See the AUTHORS file for names of contributors.
 
 #include <cstdarg>
 
-
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 extern void openlog(const char *argv0, const char *log_dir, int priority);
 extern void closelog();
@@ -41,7 +40,6 @@ typedef void (*vlog_t)(int, const char *, va_list);
 extern void setvlog(vlog_t);
 
 extern void setlog(openlog_t, closelog_t, vlog_t);
-
 
 }  // namespace phxrpc
 

@@ -23,9 +23,8 @@ See the AUTHORS file for names of contributors.
 
 #include "phxrpc/msg/base_protocol.h"
 
-
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 class BaseTcpStream;
 
@@ -33,35 +32,36 @@ class HttpMessage;
 class HttpRequest;
 class HttpResponse;
 
-class HttpProtocol : public BaseProtocol {
-  public:
-    enum {
-        MAX_RECV_LEN = 8192
-    };
+class HttpProtocol : public BaseProtocol
+{
+ public:
+  enum
+  {
+    MAX_RECV_LEN = 8192
+  };
 
-    HttpProtocol() = default;
-    virtual ~HttpProtocol() override = default;
+  HttpProtocol() = default;
+  virtual ~HttpProtocol() override = default;
 
-    static void FixRespHeaders(const HttpRequest &req, HttpResponse *resp);
+  static void FixRespHeaders(const HttpRequest &req, HttpResponse *resp);
 
-    static void FixRespHeaders(bool is_keep_alive, const char *version, HttpResponse *resp);
+  static void FixRespHeaders(bool is_keep_alive, const char *version, HttpResponse *resp);
 
-    static ReturnCode SendReqHeader(BaseTcpStream &socket, const char *method, const HttpRequest &req);
+  static ReturnCode SendReqHeader(BaseTcpStream &socket, const char *method, const HttpRequest &req);
 
-    static ReturnCode RecvRespStartLine(BaseTcpStream &socket, HttpResponse *resp);
+  static ReturnCode RecvRespStartLine(BaseTcpStream &socket, HttpResponse *resp);
 
-    static ReturnCode RecvReqStartLine(BaseTcpStream &socket, HttpRequest *req);
+  static ReturnCode RecvReqStartLine(BaseTcpStream &socket, HttpRequest *req);
 
-    static ReturnCode RecvHeaders(BaseTcpStream &socket, HttpMessage *msg);
+  static ReturnCode RecvHeaders(BaseTcpStream &socket, HttpMessage *msg);
 
-    static ReturnCode RecvBody(BaseTcpStream &socket, HttpMessage *msg);
+  static ReturnCode RecvBody(BaseTcpStream &socket, HttpMessage *msg);
 
-    static ReturnCode RecvReq(BaseTcpStream &socket, HttpRequest *req);
+  static ReturnCode RecvReq(BaseTcpStream &socket, HttpRequest *req);
 
-    virtual ReturnCode ServerRecv(BaseTcpStream &socket,
-                                  BaseRequest *&req) override;
+  virtual ReturnCode ServerRecv(BaseTcpStream &socket,
+                                BaseRequest *&req) override;
 };
-
 
 }  // namespace phxrpc
 

@@ -26,65 +26,71 @@ See the AUTHORS file for names of contributors.
 
 #include "base_msg.h"
 
-
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 template<typename Dispatcher>
-class BaseDispatcher {
-  public:
-    typedef int (Dispatcher::*MqttFunc_t)(const BaseRequest *const req,
-                                          BaseResponse *const resp);
-    typedef int (Dispatcher::*URIFunc_t)(const BaseRequest *const req,
-                                         BaseResponse *const resp);
+class BaseDispatcher
+{
+ public:
+  typedef int (Dispatcher::*MqttFunc_t)(const BaseRequest *const req,
+                                        BaseResponse *const resp);
+  typedef int (Dispatcher::*URIFunc_t)(const BaseRequest *const req,
+                                       BaseResponse *const resp);
 
-    typedef std::map<BaseMessage::Protocol, MqttFunc_t> MqttFuncMap;
-    typedef std::map<std::string, URIFunc_t> URIFuncMap;
+  typedef std::map<BaseMessage::Protocol, MqttFunc_t> MqttFuncMap;
+  typedef std::map<std::string, URIFunc_t> URIFuncMap;
 
-    BaseDispatcher(Dispatcher &dispatcher, const MqttFuncMap &mqtt_func_map,
-                   const URIFuncMap &uri_func_map)
-            : dispatcher_(dispatcher), mqtt_func_map_(mqtt_func_map),
-              uri_func_map_(uri_func_map) {
+  BaseDispatcher(Dispatcher &dispatcher, const MqttFuncMap &mqtt_func_map,
+                 const URIFuncMap &uri_func_map)
+      : dispatcher_(dispatcher), mqtt_func_map_(mqtt_func_map),
+      uri_func_map_(uri_func_map)
+  {
+  }
+
+  virtual ~BaseDispatcher() = default;
+
+  bool Dispatch(const BaseRequest *const req, BaseResponse *const resp)
+  {
+    int ret{-1};
+
+    if (BaseMessage::Protocol::HTTP_POST == req->protocol() ||
+        BaseMessage::Protocol::HTTP_GET == req->protocol() ||
+        BaseMessage::Protocol::HTTP_HEAD == req->protocol())
+    {
+      typename URIFuncMap::const_iterator iter(uri_func_map_.find(req->GetURI()));
+
+      if (uri_func_map_.end() != iter)
+      {
+        ret = (dispatcher_.*iter->second)(req, resp);
+      }
+
+      resp->SetPhxRpcResult(ret);
+
+      return uri_func_map_.end() != iter;
+    }
+    else
+    {
+      typename MqttFuncMap::const_iterator iter(mqtt_func_map_.find(req->protocol()));
+
+      if (mqtt_func_map_.end() != iter)
+      {
+        ret = (dispatcher_.*iter->second)(req, resp);
+      }
+
+      resp->SetPhxRpcResult(ret);
+
+      return mqtt_func_map_.end() != iter;
     }
 
-    virtual ~BaseDispatcher() = default;
+    return ret;
+  }
 
-    bool Dispatch(const BaseRequest *const req, BaseResponse *const resp) {
-        int ret{-1};
-
-        if (BaseMessage::Protocol::HTTP_POST == req->protocol() ||
-            BaseMessage::Protocol::HTTP_GET == req->protocol() ||
-            BaseMessage::Protocol::HTTP_HEAD == req->protocol()) {
-            typename URIFuncMap::const_iterator iter(uri_func_map_.find(req->GetURI()));
-
-            if (uri_func_map_.end() != iter) {
-                ret = (dispatcher_.*iter->second)(req, resp);
-            }
-
-            resp->SetPhxRpcResult(ret);
-
-            return uri_func_map_.end() != iter;
-        } else {
-            typename MqttFuncMap::const_iterator iter(mqtt_func_map_.find(req->protocol()));
-
-            if (mqtt_func_map_.end() != iter) {
-                ret = (dispatcher_.*iter->second)(req, resp);
-            }
-
-            resp->SetPhxRpcResult(ret);
-
-            return mqtt_func_map_.end() != iter;
-        }
-
-        return ret;
-    }
-
-  private:
-    Dispatcher &dispatcher_;
-    const MqttFuncMap &mqtt_func_map_;
-    const URIFuncMap &uri_func_map_;
+ private:
+  Dispatcher &dispatcher_;
+  const MqttFuncMap &mqtt_func_map_;
+  const URIFuncMap &uri_func_map_;
 };
-
 
 }  // namespace phxrpc
 

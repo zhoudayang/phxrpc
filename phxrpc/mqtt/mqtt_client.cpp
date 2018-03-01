@@ -33,103 +33,117 @@ See the AUTHORS file for names of contributors.
 #include "mqtt_msg.h"
 #include "mqtt_protocol.h"
 
-
-namespace {
-
+namespace
+{
 
 phxrpc::ReturnCode DoMethod(phxrpc::BaseTcpStream &socket, const phxrpc::MqttMessage *const req,
                             phxrpc::MqttMessage *const resp,
-                            phxrpc::MqttClient::MqttStat &mqtt_stat) {
-    phxrpc::ReturnCode ret{phxrpc::MqttProtocol::SendMessage(socket, req)};
-    if (phxrpc::ReturnCode::OK != ret) {
-        if (phxrpc::ReturnCode::ERROR_SOCKET_STREAM_NORMAL_CLOSED != ret) {
-            mqtt_stat.send_error_ = true;
-            phxrpc::log(LOG_ERR, "SendMessage err %d", ret);
-        }
-
-        return ret;
-    }
-
-    if (!socket.flush().good()) {
-        phxrpc::log(LOG_ERR, "socket err %d", socket.LastError());
-
-        return static_cast<phxrpc::ReturnCode>(socket.LastError());
-    }
-
-    if (!resp->fake()) {
-        ret = phxrpc::MqttProtocol::RecvMessage(socket, resp);
-        if (phxrpc::ReturnCode::OK != ret) {
-            if (phxrpc::ReturnCode::ERROR_SOCKET_STREAM_NORMAL_CLOSED != ret) {
-                mqtt_stat.recv_error_ = true;
-                phxrpc::log(LOG_ERR, "RecvMessage err %d", ret);
-            }
-
-            return ret;
-        }
+                            phxrpc::MqttClient::MqttStat &mqtt_stat)
+{
+  phxrpc::ReturnCode ret{phxrpc::MqttProtocol::SendMessage(socket, req)};
+  if (phxrpc::ReturnCode::OK != ret)
+  {
+    if (phxrpc::ReturnCode::ERROR_SOCKET_STREAM_NORMAL_CLOSED != ret)
+    {
+      mqtt_stat.send_error_ = true;
+      phxrpc::log(LOG_ERR, "SendMessage err %d", ret);
     }
 
     return ret;
+  }
+
+  if (!socket.flush().good())
+  {
+    phxrpc::log(LOG_ERR, "socket err %d", socket.LastError());
+
+    return static_cast<phxrpc::ReturnCode>(socket.LastError());
+  }
+
+  if (!resp->fake())
+  {
+    ret = phxrpc::MqttProtocol::RecvMessage(socket, resp);
+    if (phxrpc::ReturnCode::OK != ret)
+    {
+      if (phxrpc::ReturnCode::ERROR_SOCKET_STREAM_NORMAL_CLOSED != ret)
+      {
+        mqtt_stat.recv_error_ = true;
+        phxrpc::log(LOG_ERR, "RecvMessage err %d", ret);
+      }
+
+      return ret;
+    }
+  }
+
+  return ret;
 }
 
 phxrpc::ReturnCode DoMethod(phxrpc::BaseTcpStream &socket, const phxrpc::MqttMessage *const req,
-                            phxrpc::MqttMessage *const resp) {
-    phxrpc::MqttClient::MqttStat mqtt_stat;
-    return DoMethod(socket, req, resp, mqtt_stat);
+                            phxrpc::MqttMessage *const resp)
+{
+  phxrpc::MqttClient::MqttStat mqtt_stat;
+  return DoMethod(socket, req, resp, mqtt_stat);
 }
-
 
 }  // namespace
 
 
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 int MqttClient::Connect(BaseTcpStream &socket, const MqttConnect &req,
-                        MqttConnack &resp, MqttClient::MqttStat &mqtt_stat) {
-    return static_cast<int>(DoMethod(socket, &req, &resp, mqtt_stat));
+                        MqttConnack &resp, MqttClient::MqttStat &mqtt_stat)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp, mqtt_stat));
 }
 
 int MqttClient::Connect(BaseTcpStream &socket, const MqttConnect &req,
-                        MqttConnack &resp) {
-    return static_cast<int>(DoMethod(socket, &req, &resp));
+                        MqttConnack &resp)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp));
 }
 
 int MqttClient::Publish(BaseTcpStream &socket, const MqttPublish &req,
-                        MqttPuback &resp, MqttClient::MqttStat &mqtt_stat) {
-    return static_cast<int>(DoMethod(socket, &req, &resp, mqtt_stat));
+                        MqttPuback &resp, MqttClient::MqttStat &mqtt_stat)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp, mqtt_stat));
 }
 
 int MqttClient::Publish(BaseTcpStream &socket, const MqttPublish &req,
-                        MqttPuback &resp) {
-    return static_cast<int>(DoMethod(socket, &req, &resp));
+                        MqttPuback &resp)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp));
 }
 
 int MqttClient::Subscribe(BaseTcpStream &socket, const MqttSubscribe &req,
-                          MqttSuback &resp) {
-    return static_cast<int>(DoMethod(socket, &req, &resp));
+                          MqttSuback &resp)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp));
 }
 
 int MqttClient::Unsubscribe(BaseTcpStream &socket, const MqttUnsubscribe &req,
-                            MqttUnsuback &resp) {
-    return static_cast<int>(DoMethod(socket, &req, &resp));
+                            MqttUnsuback &resp)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp));
 }
 
 int MqttClient::Ping(BaseTcpStream &socket, const MqttPingreq &req,
-                     MqttPingresp &resp) {
-    return static_cast<int>(DoMethod(socket, &req, &resp));
+                     MqttPingresp &resp)
+{
+  return static_cast<int>(DoMethod(socket, &req, &resp));
 }
 
 int MqttClient::Disconnect(BaseTcpStream &socket, const MqttDisconnect &req,
-                           MqttClient::MqttStat &mqtt_stat) {
-    MqttFakeDisconnack resp;
-    return static_cast<int>(DoMethod(socket, &req, &resp, mqtt_stat));
+                           MqttClient::MqttStat &mqtt_stat)
+{
+  MqttFakeDisconnack resp;
+  return static_cast<int>(DoMethod(socket, &req, &resp, mqtt_stat));
 }
 
-int MqttClient::Disconnect(BaseTcpStream &socket, const MqttDisconnect &req) {
-    MqttFakeDisconnack resp;
-    return static_cast<int>(DoMethod(socket, &req, &resp));
+int MqttClient::Disconnect(BaseTcpStream &socket, const MqttDisconnect &req)
+{
+  MqttFakeDisconnack resp;
+  return static_cast<int>(DoMethod(socket, &req, &resp));
 }
-
 
 }  // namespace phxrpc
 

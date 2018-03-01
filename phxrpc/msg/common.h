@@ -21,45 +21,45 @@ See the AUTHORS file for names of contributors.
 
 #pragma once
 
+namespace phxrpc
+{
 
-namespace phxrpc {
-
-
-enum class ReturnCode {
-    OK = 0,
-    ERROR = -1,
-    ERROR_UNIMPLEMENT = -101,
-    ERROR_STEAM_BAD_OR_FAILED = -102,
-    ERROR_LENGTH_OVERFLOW = -103,
-    ERROR_SOCKET_STREAM_TIMEOUT = -202,
-    ERROR_SOCKET_STREAM_NORMAL_CLOSED = -303,
-    MAX,
+enum class ReturnCode
+{
+  OK = 0,
+  ERROR = -1,
+  ERROR_UNIMPLEMENT = -101,
+  ERROR_STEAM_BAD_OR_FAILED = -102,
+  ERROR_LENGTH_OVERFLOW = -103,
+  ERROR_SOCKET_STREAM_TIMEOUT = -202,
+  ERROR_SOCKET_STREAM_NORMAL_CLOSED = -303,
+  MAX,
 };
 
-
-enum class Direction {
-    NONE = 0,
-    REQUEST,
-    RESPONSE,
-    MAX,
+enum class Direction
+{
+  NONE = 0,
+  REQUEST,
+  RESPONSE,
+  MAX,
 };
 
-enum class Protocol {
-    NONE = 0,
-    HTTP_GET = 101,
-    HTTP_POST = 102,
-    HTTP_HEAD = 103,
-    MQTT_CONNECT = 201,
-    MQTT_PUBLISH = 202,
-    MQTT_PUBREL = 203,
-    MQTT_SUBSCRIBE = 204,
-    MQTT_UNSUBSCRIBE = 205,
-    MQTT_PING = 206,
-    MQTT_DISCONNECT = 207,
-    MQTT_FAKE_DISCONNACK = 208,
-    MAX,
+enum class Protocol
+{
+  NONE = 0,
+  HTTP_GET = 101,
+  HTTP_POST = 102,
+  HTTP_HEAD = 103,
+  MQTT_CONNECT = 201,
+  MQTT_PUBLISH = 202,
+  MQTT_PUBREL = 203,
+  MQTT_SUBSCRIBE = 204,
+  MQTT_UNSUBSCRIBE = 205,
+  MQTT_PING = 206,
+  MQTT_DISCONNECT = 207,
+  MQTT_FAKE_DISCONNACK = 208,
+  MAX,
 };
-
 
 }
 

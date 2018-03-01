@@ -25,18 +25,17 @@ See the AUTHORS file for names of contributors.
 
 #include "phxrpc/network.h"
 
+namespace phxrpc
+{
 
-namespace phxrpc {
+class BaseProtocol
+{
+ public:
+  BaseProtocol() = default;
+  virtual ~BaseProtocol() = default;
 
-
-class BaseProtocol {
-  public:
-    BaseProtocol() = default;
-    virtual ~BaseProtocol() = default;
-
-    virtual ReturnCode ServerRecv(BaseTcpStream &socket, BaseRequest *&req) = 0;
+  virtual ReturnCode ServerRecv(BaseTcpStream &socket, BaseRequest *&req) = 0;
 };
-
 
 }
 

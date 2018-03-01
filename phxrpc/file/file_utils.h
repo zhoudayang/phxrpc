@@ -23,15 +23,18 @@ See the AUTHORS file for names of contributors.
 
 #include <string>
 
-namespace phxrpc {
+namespace phxrpc
+{
 
-class FileUtils {
-public:
-    static bool ReadFile(const char * path, std::string * content);
+class FileUtils
+{
+ public:
+  /// 静态函数，从文件之中读取内容
+  static bool ReadFile(const char *path, std::string *content);
 
-private:
-    FileUtils();
-    ~FileUtils();
+ private:
+  FileUtils();
+  ~FileUtils();
 };
 
 }

@@ -21,42 +21,40 @@ See the AUTHORS file for names of contributors.
 
 #pragma once
 
-
-namespace phxrpc {
-
+namespace phxrpc
+{
 
 class BaseRequest;
 class BaseProtocol;
 
+class BaseProtocolFactory
+{
+ public:
+  BaseProtocolFactory() = default;
+  virtual ~BaseProtocolFactory() = default;
 
-class BaseProtocolFactory {
-  public:
-    BaseProtocolFactory() = default;
-    virtual ~BaseProtocolFactory() = default;
+  static BaseProtocolFactory *CreateFactory(UThreadTcpStream &in_stream);
 
-    static BaseProtocolFactory *CreateFactory(UThreadTcpStream &in_stream);
-
-    virtual BaseProtocol *GenProtocol() = 0;
+  virtual BaseProtocol *GenProtocol() = 0;
 };
 
+class HttpProtocolFactory : public BaseProtocolFactory
+{
+ public:
+  HttpProtocolFactory() = default;
+  virtual ~HttpProtocolFactory() = default;
 
-class HttpProtocolFactory : public BaseProtocolFactory {
-  public:
-    HttpProtocolFactory() = default;
-    virtual ~HttpProtocolFactory() = default;
-
-    virtual BaseProtocol *GenProtocol() override;
+  virtual BaseProtocol *GenProtocol() override;
 };
 
+class MqttProtocolFactory : public BaseProtocolFactory
+{
+ public:
+  MqttProtocolFactory() = default;
+  virtual ~MqttProtocolFactory() = default;
 
-class MqttProtocolFactory : public BaseProtocolFactory {
-  public:
-    MqttProtocolFactory() = default;
-    virtual ~MqttProtocolFactory() = default;
-
-    virtual BaseProtocol *GenProtocol() override;
+  virtual BaseProtocol *GenProtocol() override;
 };
-
 
 }
 
